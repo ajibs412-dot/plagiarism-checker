@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <title>Plagiarism Checker</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 30px; background:#f6f8fb; }
+        .card { background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,.06); max-width:900px; margin: auto; }
+        textarea { width: 100%; height: 160px; padding: 10px; font-size:14px; }
+        .btn { background:#007bff; color:white; border:none; padding:10px 14px; border-radius:6px; cursor:pointer; }
+        .result { margin-top:20px; }
+        mark { background: #ffeb3b; padding: 0; }
+        .meta { font-size:14px; color:#333; margin-bottom:10px; }
+        .matches { margin-top:10px; }
+        .match { padding:8px; border-radius:6px; background:#f2f6fb; margin-bottom:8px; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h2>Plagiarism Checker</h2>
+        <form method="POST" enctype="multipart/form-data">
+            <label><strong>Paste text:</strong></label><br>
+            <textarea name="text" placeholder="Paste suspicious text here...">{{ user_text or "" }}</textarea><br><br>
+
+            <label><strong>Or upload a file (.txt / .pdf / .docx):</strong></label><br>
+            <input type="file" name="file" accept=".txt,.pdf,.docx"><br><br>
+
+            <button type="submit" class="btn">Check Plagiarism</button>
+        </form>
+
+        {% if result %}
+            <div class="result">
+                <div class="meta">
+                    <strong>Plagiarism percentage:</strong> {{ result.overall_percent }}%
+                </div>
+
+                <h3>Highlighted text (matches in yellow)</h3>
+                <div style="white-space:pre-wrap; border:1px solid #eee; padding:12px; border-radius:6px;">
+                    {{ result.highlighted_html | safe }}
+                </div>
+
+                <h3>Matched sources</h3>
+                <div class="matches">
+                    {% if result.matches %}
+                        {% for m in result.matches %}
+                            <div class="match">
+                                <b>File:</b> {{ m.matched_file }} &nbsp; <b>Score:</b> {{ m.score }}<br>
+                                <small>{{ m.matched_text_snippet }}...</small>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <div>No strong matches found.</div>
+                    {% endif %}
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</body>
+</html>
