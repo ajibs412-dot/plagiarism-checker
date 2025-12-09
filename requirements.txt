@@ -1,0 +1,7 @@
+flask
+scikit-learn
+nltk
+python-docx
+PyPDF2
+gunicorn
+Werkzeug
